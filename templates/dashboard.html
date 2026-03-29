@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arbitrage Finder - Profitable Products</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .control-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1em;
+            min-width: 200px;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        button {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+        
+        .product-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .product-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .product-source {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+        
+        .profit-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #4CAF50;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .product-body {
+            padding: 20px;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .metric:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .metric-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .metric-value {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .margin-high {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .demand-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        
+        .demand-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFB74D 0%, #4CAF50 100%);
+            border-radius: 4px;
+        }
+        
+        .no-products {
+            text-align: center;
+            color: white;
+            padding: 40px;
+            font-size: 1.1em;
+        }
+        
+        .loading {
+            text-align: center;
+            color: white;
+            padding: 40px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 4px solid white;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c62828;
+        }
+        
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2e7d32;
+        }
+        
+        .action-button {
+            background: white;
+            color: #667eea;
+            padding: 8px 16px;
+            font-size: 0.85em;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+        
+        .action-button:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .add-product-btn {
+            padding: 10px 15px;
+            font-size: 0.9em;
+            background: #e0e0e0;
+            color: #333;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Arbitrage Finder</h1>
+            <p class="subtitle">Find profitable e-commerce opportunities in real-time</p>
+            <p class="subtitle" style="font-size: 0.9em; opacity: 0.7; margin-top: 10px;">Real eBay data • Instant supplier search • Live profit analysis</p>
+        </header>
+        
+        <div class="control-section">
+            <h2 style="margin-bottom: 20px; color: #333;">Analyze Products</h2>
+            <div id="product-inputs">
+                <div class="input-group">
+                    <input type="text" class="product-input" placeholder="Enter product name..." />
+                    <button class="add-product-btn" onclick="addProductInput()">+ Add</button>
+                </div>
+            </div>
+            <button onclick="runAnalysis()" style="margin-top: 15px; width: 100%; padding: 15px;">🔍 Analyze Selected Products</button>
+            <p style="color: #999; font-size: 0.85em; margin-top: 10px;">Enter product names and click Analyze to find profitable arbitrage opportunities</p>
+        </div>
+        
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="total-analyzed">0</div>
+                <div class="stat-label">Products Analyzed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="winning-count">0</div>
+                <div class="stat-label">Winning Products</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avg-margin">0%</div>
+                <div class="stat-label">Avg Profit Margin</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="total-profit">$0</div>
+                <div class="stat-label">Total Profit (10 units)</div>
+            </div>
+        </div>
+        
+        <div id="message-area"></div>
+        
+        <div id="products-container">
+            <div class="no-products">
+                📊 Analyze products to see results here
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let analysisInProgress = false;
+        
+        function addProductInput() {
+            const input = document.querySelector('.product-input:last-child');
+            if (input && input.value.trim()) {
+                const newInput = document.createElement('div');
+                newInput.className = 'input-group';
+                newInput.innerHTML = '<input type="text" class="product-input" placeholder="Enter product name..." />';
+                document.getElementById('product-inputs').appendChild(newInput);
+                input.focus();
+            }
+        }
+        
+        function getProductInputs() {
+            return Array.from(document.querySelectorAll('.product-input'))
+                .map(input => input.value.trim())
+                .filter(value => value.length > 0);
+        }
+        
+        async function runAnalysis() {
+            const products = getProductInputs();
+            if (products.length === 0) {
+                showMessage('Please enter at least one product name', 'error');
+                return;
+            }
+            
+            if (analysisInProgress) {
+                showMessage('Analysis already in progress...', 'error');
+                return;
+            }
+            
+            analysisInProgress = true;
+            showMessage('Analyzing products... This may take a minute.', 'success');
+            showLoading();
+            
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ products })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Analysis failed');
+                }
+                
+                // Load results
+                await loadResults();
+                showMessage(`✅ Analysis complete! Found ${data.winning_products ? data.winning_products.length : 0} winning products.`, 'success');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Error during analysis: ' + error.message, 'error');
+                document.getElementById('products-container').innerHTML = '<div class="no-products">No results to display</div>';
+            } finally {
+                analysisInProgress = false;
+            }
+        }
+        
+        async function loadResults() {
+            try {
+                const response = await fetch('/api/results');
+                if (!response.ok) throw new Error('Failed to load results');
+                
+                const data = await response.json();
+                displayResults(data);
+            } catch (error) {
+                console.error('Error loading results:', error);
+            }
+        }
+        
+        function displayResults(data) {
+            const winningProducts = data.winning_products || [];
+            const container = document.getElementById('products-container');
+            
+            // Update stats
+            document.getElementById('total-analyzed').textContent = data.products_analyzed || winningProducts.length;
+            document.getElementById('winning-count').textContent = winningProducts.length;
+            
+            if (winningProducts.length === 0) {
+                container.innerHTML = '<div class="no-products">No winning products found. Try other products!</div>';
+                document.getElementById('avg-margin').textContent = '0%';
+                document.getElementById('total-profit').textContent = '$0';
+                return;
+            }
+            
+            // Calculate averages
+            const totalMargin = winningProducts.reduce((sum, p) => sum + (p.profit_margin || 0), 0);
+            const avgMargin = Math.round(totalMargin / winningProducts.length);
+            const totalProfit = winningProducts.reduce((sum, p) => sum + (p.profit_per_unit || 0) * 10, 0);
+            
+            document.getElementById('avg-margin').textContent = avgMargin + '%';
+            document.getElementById('total-profit').textContent = '$' + Math.round(totalProfit).toLocaleString();
+            
+            // Render product cards
+            let html = '<div class="products-grid">';
+            winningProducts.forEach(product => {
+                const demand = product.demand_score || 0;
+                const demandPercent = Math.min(demand, 100);
+                
+                html += `
+                    <div class="product-card">
+                        <div class="product-header">
+                            <div class="profit-badge">${product.profit_margin || 0}%</div>
+                            <div class="product-title">${product.product_name}</div>
+                            <div class="product-source">via ${product.source || 'Unknown'}</div>
+                        </div>
+                        <div class="product-body">
+                            <div class="metric">
+                                <span class="metric-label">eBay Price</span>
+                                <span class="metric-value">$${(product.ebay_price || 0).toFixed(2)}</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Source Cost</span>
+                                <span class="metric-value">$${(product.source_cost || 0).toFixed(2)}</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Landed Cost</span>
+                                <span class="metric-value">$${(product.landed_cost || 0).toFixed(2)}</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Profit per Unit</span>
+                                <span class="metric-value margin-high">+$${(product.profit_per_unit || 0).toFixed(2)}</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Market Demand</span>
+                                <div style="flex-grow: 1;"></div>
+                            </div>
+                            <div class="demand-bar">
+                                <div class="demand-fill" style="width: ${demandPercent}%"></div>
+                            </div>
+                            <div style="text-align: right; font-size: 0.8em; color: #999; margin-top: 4px;">${Math.round(demand)}/100</div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            container.innerHTML = html;
+        }
+        
+        function showMessage(message, type) {
+            const area = document.getElementById('message-area');
+            area.innerHTML = `<div class="${type}">${message}</div>`;
+            setTimeout(() => {
+                area.innerHTML = '';
+            }, 5000);
+        }
+        
+        function showLoading() {
+            const container = document.getElementById('products-container');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div>Analyzing products...</div>';
+        }
+        
+        // Load results on page load
+        window.addEventListener('load', async () => {
+            const input = document.querySelector('.product-input');
+            input.focus();
+            
+            try {
+                const response = await fetch('/api/results');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.winning_products && data.winning_products.length > 0) {
+                        displayResults(data);
+                    }
+                }
+            } catch (error) {
+                console.log('No previous results found');
+            }
+        });
+        
+        // Allow Enter key to add product
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && e.target.classList.contains('product-input')) {
+                e.preventDefault();
+                addProductInput();
+            }
+        });
+    </script>
+</body>
+</html>

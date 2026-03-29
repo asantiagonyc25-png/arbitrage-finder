@@ -1,0 +1,34 @@
+2026-03-28 22:34:30,958 - __main__ - INFO - ================================================================================
+2026-03-28 22:34:30,958 - __main__ - INFO - 🚀 ARBITRAGE FINDER - E-Commerce Opportunity Analyzer
+2026-03-28 22:34:30,958 - __main__ - INFO - ================================================================================
+2026-03-28 22:34:30,958 - __main__ - INFO - Analyzing 2 custom products...
+2026-03-28 22:34:30,987 - main - INFO - Starting analysis of 2 products...
+2026-03-28 22:34:30,987 - main - INFO - Start time: 2026-03-28 22:34:30
+2026-03-28 22:34:30,987 - main - INFO - 
+============================================================
+2026-03-28 22:34:30,987 - main - INFO - Analyzing: vintage camera lens
+2026-03-28 22:34:30,987 - main - INFO - ============================================================
+2026-03-28 22:34:30,987 - main - INFO - Step 1: Getting eBay data...
+2026-03-28 22:34:30,987 - ebay_scraper - INFO - Fetching eBay data for: vintage camera lens
+2026-03-28 22:34:42,816 - ebay_scraper - ERROR - Error getting active listings for 'vintage camera lens': HTTPSConnectionPool(host='www.ebay.com', port=443): Read timed out. (read timeout=10)
+2026-03-28 22:34:45,671 - ebay_scraper - WARNING - Could not get complete data for vintage camera lens
+2026-03-28 22:34:45,672 - main - WARNING - Could not get eBay data for vintage camera lens
+2026-03-28 22:34:47,675 - main - INFO - 
+============================================================
+2026-03-28 22:34:47,675 - main - INFO - Analyzing: gaming controller
+2026-03-28 22:34:47,675 - main - INFO - ============================================================
+2026-03-28 22:34:47,675 - main - INFO - Step 1: Getting eBay data...
+2026-03-28 22:34:47,675 - ebay_scraper - INFO - Fetching eBay data for: gaming controller
+2026-03-28 22:34:59,357 - ebay_scraper - ERROR - Error getting active listings for 'gaming controller': HTTPSConnectionPool(host='www.ebay.com', port=443): Read timed out. (read timeout=10)
+2026-03-28 22:35:10,447 - ebay_scraper - ERROR - Error getting average price for 'gaming controller': HTTPSConnectionPool(host='www.ebay.com', port=443): Read timed out. (read timeout=10)
+2026-03-28 22:35:11,452 - ebay_scraper - WARNING - Could not get complete data for gaming controller
+2026-03-28 22:35:11,452 - main - WARNING - Could not get eBay data for gaming controller
+2026-03-28 22:35:13,456 - main - INFO - Results saved to results.json
+2026-03-28 22:35:13,456 - __main__ - INFO - Results saved to results.json
+2026-03-28 22:35:13,456 - __main__ - INFO - 
+✅ Analysis Complete!
+2026-03-28 22:35:13,456 - __main__ - INFO - 📊 Found 0 winning products
+2026-03-28 22:35:13,456 - __main__ - INFO - ================================================================================
+No winning products found.
+
+No statistics available.
