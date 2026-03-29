@@ -5,11 +5,21 @@ import json
 import logging
 from flask import Flask, render_template, jsonify, request
 from datetime import datetime
-from main import ArbitrageFinder
 
-# Setup logging
+# Setup logging FIRST
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Try importing main, but don't fail if it has issues
+try:
+    from main import ArbitrageFinder
+    MAIN_AVAILABLE = True
+except Exception as e:
+    logger.warning(f"Could not import ArbitrageFinder: {e}. Using stub.")
+    MAIN_AVAILABLE = False
+    class ArbitrageFinder:
+        def analyze_product(self, product, verbose=False):
+            return None
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
@@ -34,6 +44,9 @@ def index():
 def analyze():
     """Run new analysis on provided products."""
     try:
+        if not MAIN_AVAILABLE:
+            return jsonify({'error': 'Analysis system not available'}), 503
+        
         data = request.json
         products = data.get('products', [])
         
@@ -50,11 +63,14 @@ def analyze():
         latest_results['winning_products'] = []
         
         for product in products:
-            result = finder.analyze_product(product, verbose=True)
-            if result:
-                latest_results['analysis_results'].append(result)
-                if result.get('viable'):
-                    latest_results['winning_products'].append(result)
+            try:
+                result = finder.analyze_product(product, verbose=True)
+                if result:
+                    latest_results['analysis_results'].append(result)
+                    if result.get('viable'):
+                        latest_results['winning_products'].append(result)
+            except Exception as e:
+                logger.warning(f"Error analyzing {product}: {e}")
         
         latest_results['status'] = 'complete'
         latest_results['last_updated'] = datetime.now().isoformat()
@@ -64,8 +80,8 @@ def analyze():
             with open('results.json', 'r') as f:
                 file_results = json.load(f)
                 latest_results['winning_products'] = file_results.get('winning_products', [])
-        except:
-            pass
+        except Exception as e:
+            logger.debug(f"Could not load results.json: {e}")
         
         logger.info(f"Analysis complete: {len(latest_results['winning_products'])} winning products found")
         
@@ -116,8 +132,10 @@ if __name__ == '__main__':
             file_results = json.load(f)
             latest_results['winning_products'] = file_results.get('winning_products', [])
             latest_results['last_updated'] = datetime.now().isoformat()
-    except:
-        pass
+    except Exception as e:
+        logger.warning(f"Could not load results.json: {e}")
+        logger.info("Starting with empty results - that's fine!")
     
     port = int(os.environ.get('PORT', 8080))
+    logger.info(f"Starting Flask app on port {port}")
     app.run(host='0.0.0.0', port=port, debug=False)
