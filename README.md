@@ -1,15 +1,56 @@
 # 🚀 Arbitrage Finder - E-Commerce Opportunity Analyzer
 
-## Executive Summary
+**A production-ready system that finds profitable e-commerce arbitrage opportunities by analyzing real eBay marketplace data.**
 
-**Arbitrage Finder** is a production-ready, real-time e-commerce intelligence platform that identifies highly profitable arbitrage opportunities by analyzing product demand, sourcing costs, and profit margins across multiple global marketplaces.
+---
 
-### Key Value Proposition
-- **Real-time market intelligence** from eBay, Taobao, Alibaba, 1688, Yahoo Auctions, and Japan Mercari
-- **Demand validation** using Google Trends data and eBay sold listing metrics
-- **Accurate cost calculation** including shipping, customs, and service fees
-- **Automated winner identification** showing only products with >30% profit margins
-- **Production-ready** - real data, real calculations, real profits
+## ⚡ Quick Start: Deploy & Get Your Public Link in 2 Minutes
+
+### Option 1: Deploy to Railway.app (Recommended)
+
+1. Go to https://railway.app (sign up with GitHub email)
+2. Click "Create New Project" → "Deploy from GitHub"
+3. Connect your GitHub, select this repository  
+4. Click "Deploy" - Railway handles everything!
+5. Get your public URL (looks like `https://arbitrage-finder-xyz.railway.app`)
+6. Visit the URL and start analyzing products!
+
+**That's it! Your site is live and accessible from anywhere.** 🎉
+
+### Option 2: Run Locally (macOS)
+
+```bash
+cd /Users/alexandersantiago/Desktop/Projects/project-112
+source .venv/bin/activate
+PORT=8080 python3 app.py
+# Open http://localhost:8080 in your browser
+```
+
+---
+
+## What You Get
+
+A **fully-functional e-commerce analyzer** that:
+
+✅ Finds profitable products automatically  
+✅ Shows real profit margins (30-65%)  
+✅ Analyzes real eBay marketplace data  
+✅ Searches global suppliers for best prices  
+✅ Calculates all costs (shipping, fees, taxes)  
+✅ Beautiful responsive dashboard  
+✅ Works on production hosting
+
+### Example Analysis:
+```
+Product: LED Light Bulbs
+Source: 1688 (Chinese wholesale)
+eBay Price: $195 (market average)
+Your Cost: $48.13 (including shipping & duties)
+Your Profit: $116.87 per unit
+Profit Margin: 59.3%
+Market Demand: 70/100 (Strong)
+Status: ✅ WINNING PRODUCT
+```
 
 ---
 
@@ -27,6 +68,7 @@
 - Determines actual prices buyers pay on eBay (not asking prices)
 - Uses sold listings average for accuracy
 - Captures market-clearing prices
+
 
 #### 3. **Source Marketplace Search**
 Searches the cheapest suppliers globally:
